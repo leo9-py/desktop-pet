@@ -41,7 +41,11 @@ export default function App(): React.JSX.Element {
       const dy = me.screenY - dragRef.current.startMY
       if (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD) {
         dragRef.current.dragged = true
-        window.petApi.setWindowPosition(dragRef.current.startWX + dx, dragRef.current.startWY + dy)
+        const dpr = window.devicePixelRatio
+        window.petApi.setWindowPosition(
+          Math.round((dragRef.current.startWX + dx) * dpr),
+          Math.round((dragRef.current.startWY + dy) * dpr)
+        )
       }
     }
 
