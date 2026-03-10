@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react'
+import { useCallback } from 'react'
 import './styles/global.css'
 import './styles/sprite.css'
 import './styles/bubble.css'
@@ -8,8 +8,6 @@ import { PetSprite } from './components/PetSprite'
 import { SpeechBubble } from './components/SpeechBubble'
 import { TypingDots } from './components/TypingDots'
 
-const DRAG_THRESHOLD = 5
-
 export default function App(): React.JSX.Element {
   useIpc()
 
@@ -18,42 +16,17 @@ export default function App(): React.JSX.Element {
   const showBubble = !!message && !isTyping
   const showTyping = isTyping
 
-  const dragRef = useRef<{
-    startMX: number
-    startMY: number
-    startWX: number
-    startWY: number
-    dragged: boolean
-  } | null>(null)
+  const handleMouseDown = useCallback((_e: React.MouseEvent) => {
+    let isDragging = false
+    window.petApi.dragStart()
 
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    dragRef.current = {
-      startMX: e.screenX,
-      startMY: e.screenY,
-      startWX: window.screenX,
-      startWY: window.screenY,
-      dragged: false
-    }
-
-    const onMove = (me: MouseEvent): void => {
-      if (!dragRef.current) return
-      const dx = me.screenX - dragRef.current.startMX
-      const dy = me.screenY - dragRef.current.startMY
-      if (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD) {
-        dragRef.current.dragged = true
-        const dpr = window.devicePixelRatio
-        window.petApi.setWindowPosition(
-          Math.round((dragRef.current.startWX + dx) * dpr),
-          Math.round((dragRef.current.startWY + dy) * dpr)
-        )
-      }
+    const onMove = (): void => {
+      isDragging = true
+      window.petApi.dragMove()
     }
 
     const onUp = (): void => {
-      if (dragRef.current && !dragRef.current.dragged) {
-        window.petApi.poke()
-      }
-      dragRef.current = null
+      if (!isDragging) window.petApi.poke()
       document.removeEventListener('mousemove', onMove)
       document.removeEventListener('mouseup', onUp)
     }

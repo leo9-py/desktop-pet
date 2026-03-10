@@ -1,8 +1,11 @@
-import { ipcMain } from 'electron'
+import { ipcMain, screen } from 'electron'
 import { settingsStore } from './settingsStore'
 import { listModels } from './ollamaClient'
 import { pokeComment } from './commentaryEngine'
 import { getPetWindow } from './petWindow'
+
+let dragOffsetX = 0
+let dragOffsetY = 0
 
 export function registerIpcHandlers(): void {
   ipcMain.handle('pet:getSettings', () => settingsStore.getAll())
@@ -23,7 +26,19 @@ export function registerIpcHandlers(): void {
     pokeComment()
   })
 
-  ipcMain.handle('pet:setWindowPosition', (_e, x: number, y: number) => {
-    getPetWindow()?.setPosition(Math.round(x), Math.round(y))
+  ipcMain.handle('pet:dragStart', () => {
+    const win = getPetWindow()
+    if (!win) return
+    const [wx, wy] = win.getPosition()
+    const { x: cx, y: cy } = screen.getCursorScreenPoint()
+    dragOffsetX = cx - wx
+    dragOffsetY = cy - wy
+  })
+
+  ipcMain.handle('pet:dragMove', () => {
+    const win = getPetWindow()
+    if (!win) return
+    const { x: cx, y: cy } = screen.getCursorScreenPoint()
+    win.setPosition(cx - dragOffsetX, cy - dragOffsetY)
   })
 }
