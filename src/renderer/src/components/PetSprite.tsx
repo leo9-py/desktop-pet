@@ -2,14 +2,14 @@ import type { AnimationState } from '../../../shared/types'
 
 interface Props {
   state: AnimationState
-  onClick?: () => void
+  onMouseDown?: (e: React.MouseEvent) => void
 }
 
 // Pure CSS/SVG pixel cat — no external asset required.
 // Replace with a sprite sheet later by swapping this component.
-export function PetSprite({ state, onClick }: Props): React.JSX.Element {
+export function PetSprite({ state, onMouseDown }: Props): React.JSX.Element {
   return (
-    <div className={`pet-sprite pet-sprite--${state}`} aria-label="Pip the desktop pet" onClick={onClick} style={{ cursor: 'pointer' }}>
+    <div className={`pet-sprite pet-sprite--${state}`} aria-label="Pip the desktop pet" onMouseDown={onMouseDown} style={{ cursor: 'grab' }}>
       <svg
         viewBox="0 0 64 80"
         xmlns="http://www.w3.org/2000/svg"

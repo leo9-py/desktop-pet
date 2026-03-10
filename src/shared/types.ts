@@ -38,6 +38,7 @@ export interface IpcApi {
   setModel: (model: string) => Promise<void>
   getModels: () => Promise<string[]>
   poke: () => Promise<void>
+  setWindowPosition: (x: number, y: number) => Promise<void>
   onComment: (cb: (message: string) => void) => () => void
   onTypingStart: (cb: () => void) => () => void
   onTypingEnd: (cb: () => void) => () => void

@@ -2,6 +2,7 @@ import { ipcMain } from 'electron'
 import { settingsStore } from './settingsStore'
 import { listModels } from './ollamaClient'
 import { pokeComment } from './commentaryEngine'
+import { getPetWindow } from './petWindow'
 
 export function registerIpcHandlers(): void {
   ipcMain.handle('pet:getSettings', () => settingsStore.getAll())
@@ -20,5 +21,9 @@ export function registerIpcHandlers(): void {
 
   ipcMain.handle('pet:poke', () => {
     pokeComment()
+  })
+
+  ipcMain.handle('pet:setWindowPosition', (_e, x: number, y: number) => {
+    getPetWindow()?.setPosition(Math.round(x), Math.round(y))
   })
 }

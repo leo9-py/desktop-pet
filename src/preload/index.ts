@@ -13,6 +13,7 @@ const api: IpcApi = {
   setModel: (model) => ipcRenderer.invoke('pet:setModel', model),
   getModels: () => ipcRenderer.invoke('pet:getModels') as Promise<string[]>,
   poke: () => ipcRenderer.invoke('pet:poke') as Promise<void>,
+  setWindowPosition: (x, y) => ipcRenderer.invoke('pet:setWindowPosition', x, y) as Promise<void>,
 
   onComment: (cb) => onChannel('pet:comment', cb as (...args: unknown[]) => void),
   onTypingStart: (cb) => onChannel('pet:typingStart', cb as (...args: unknown[]) => void),
